@@ -1,21 +1,26 @@
 const express = require('express');
+const helmet = require("helmet");
+
 const server = express();
-const userRoutes = require("./users/userRouter");
-const postsRoutes = require("./posts/postRouter");
+
+//routers
+const userRouter = require("./users/userRouter.js");
+const postRouter = require("./posts/postRouter.js");
 
 
 
 
 //custom middleware
 function logger(req, res, next) {
-  console.log(`${req.method} ${req.url} ${new Date().getTime()}`);
+  console.log(`${req.method} ${req.originalUrl} ${new Date().getTime()}`);
   
 	next();
 }
 
 server.use(logger);
-server.use("/users", userRoutes);
-server.use("/posts", postsRoutes);
+server.use(helmet());
+server.use("/api/users", userRouter);
+server.use("/api/posts", postRouter);
 
 server.get('/', (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);

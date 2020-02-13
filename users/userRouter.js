@@ -5,7 +5,7 @@ const Posts = require("../posts/postDb")
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
   // do your magic!
   const userData = req.body;
 
@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
 });
 
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // do your magic!
   const user_id = req.user.id;
   const postData = { ...req.body, user_id };
@@ -45,7 +45,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateUserId, (req, res) => {
   // do your magic!
   const { id } = req.user;
 
@@ -58,7 +58,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
   // do your magic!
   const { id } = req.user;
 
@@ -71,7 +71,7 @@ router.get('/:id/posts', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId, (req, res) => {
   // do your magic!
   const { id } = req.user;
 
@@ -85,7 +85,7 @@ router.delete('/:id', (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
   // do your magic!
   const { id } = req.user;
   const userData = req.body;
@@ -118,7 +118,7 @@ function validateUserId(req, res, next) {
         req.user = user;
         next();
       } else {
-        res.status(400).json({ message: "Invalid user Id" });
+        res.status(400).json({ message: "Invalid user Id!" });
       }
     })
     .catch(err => {
